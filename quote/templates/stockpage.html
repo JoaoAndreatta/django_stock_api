@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+
+
+<h1>This is the stock page!</h1><br/>
+
+<form action="{% url 'stock' %}" class="form-inline my-2 my-lg-0" role="search" method="POST">
+    {% csrf_token %}
+  <input class="form-control me-2" type="search" placeholder="Add To Portfolio" aria-label="Search" name="ticker">
+  <button class="btn btn-outline-secondary" type="submit">Add Stock</button>
+</form>
+<br/>
+
+<table class="table table-bordered table-hover">
+  <thead class="table-dark">
+    <tr>
+      <th scope="col">Ticker Symbol</th>
+      <th scope="col">Company Name</th>
+      <th scope="col">Stock Price</th>
+      <th scope="col">Previous Close</th>
+      <th scope="col">Variation</th>
+      <th scope="col">Market Cap</th>
+      <th scope="col">YTD Change</th>
+      <th scope="col">52 WK High</th>
+      <th scope="col">52 WK Low</th>
+    </tr>
+  </thead>
+  <tbody>
+    
+    {% if ticker %}
+
+      {% for list_item in output %}
+        <tr>
+          <th scope="row">{{ list_item.symbol }}</th>
+          <td>{{ list_item.companyName }}</td>
+          <td>${{ list_item.latestPrice }}</td>
+          <td>${{ list_item.previousClose }}</td>
+          <td>{{ list_item.changePercent }}</td>
+          <td>${{ list_item.marketCap|floatformat:"0"|intcomma }}</td>
+          <td>{{ list_item.ytdChange }}</td>
+          <td>{{ list_item.week52High }}</td>
+          <td>{{ list_item.week52Low }}</td>
+        </tr>
+      {% endfor %}
+
+    {% endif %}
+  
+  </tbody>
+</table>
+
+    {% for item in ticker %}
+        <a href="{% url 'delete' item.id %}" class="btn btn-secondary" >Delete {{ item }}</a> 
+    {% endfor %}
+
+{% endblock %}
